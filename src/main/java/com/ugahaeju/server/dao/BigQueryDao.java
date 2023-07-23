@@ -28,9 +28,9 @@ public class BigQueryDao {
         try {
             BigQuery bigQuery = getBigQuery();
             TableId tableId = TableId.of("STOREDB", "Store");
+
             String query = "INSERT STOREDB.Product (product_id, store_id, product_name, star, review, heart, date, price, discount, point)\n"
                     + "VALUES";
-            System.out.println("Table is updated successfully using DML");
 
             // 상품 정보를 넣을 insert문
             for (PostProductsReq postProductReq : postProductsReq) {
