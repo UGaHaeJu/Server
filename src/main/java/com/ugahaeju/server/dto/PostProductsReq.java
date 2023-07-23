@@ -1,4 +1,4 @@
-package com.ugahaeju.server.model;
+package com.ugahaeju.server.dto;
 
 import java.time.LocalDate;
 

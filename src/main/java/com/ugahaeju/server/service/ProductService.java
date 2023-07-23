@@ -1,7 +1,7 @@
 package com.ugahaeju.server.service;
 
 import com.ugahaeju.server.dao.ProductDao;
-import com.ugahaeju.server.model.PostProductsReq;
+import com.ugahaeju.server.dto.PostProductsReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

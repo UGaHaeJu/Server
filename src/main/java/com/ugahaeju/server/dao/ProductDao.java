@@ -1,7 +1,7 @@
 package com.ugahaeju.server.dao;
 
 import com.google.cloud.bigquery.*;
-import com.ugahaeju.server.model.PostProductsReq;
+import com.ugahaeju.server.dto.PostProductsReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

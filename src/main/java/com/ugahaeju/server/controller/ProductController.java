@@ -1,7 +1,7 @@
 package com.ugahaeju.server.controller;
 
-import com.ugahaeju.server.model.PostProductsReq;
-import com.ugahaeju.server.model.PostProductsRes;
+import com.ugahaeju.server.dto.PostProductsReq;
+import com.ugahaeju.server.dto.PostProductsRes;
 import com.ugahaeju.server.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
