@@ -12,7 +12,7 @@ import static com.ugahaeju.server.utils.BigQuery.BigQueryAuthentication.getBigQu
 
 @Service
 @RequiredArgsConstructor
-public class BigQueryDao {
+public class ProductDao {
     /**데이터셋(테이블의 집합) 생성**/
     public void createDataset() {
         BigQuery bigQuery = getBigQuery();
