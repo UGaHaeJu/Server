@@ -3,14 +3,14 @@ package com.ugahaeju.server.dao;
 import com.google.cloud.bigquery.*;
 import com.ugahaeju.server.model.PostProductsReq;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
 
 import static com.ugahaeju.server.utils.BigQuery.BigQueryAuthentication.getBigQuery;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class ProductDao {
     /**데이터셋(테이블의 집합) 생성**/
