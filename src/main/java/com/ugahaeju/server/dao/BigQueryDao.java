@@ -29,7 +29,11 @@ public class BigQueryDao {
             BigQuery bigQuery = getBigQuery();
             TableId tableId = TableId.of("STOREDB", "Store");
 
-            String query = "INSERT STOREDB.Product (product_id, store_id, product_name, star, review, heart, date, price, discount, point)\n"
+            // 테이블의 전체 데이터 삭제
+            String query = "TRUNCATE TABLE STOREDB.Product;\n";
+
+            // (업데이트된) 데이터 삽입
+            query += "INSERT STOREDB.Product (product_id, store_id, product_name, star, review, heart, date, price, discount, point)\n"
                     + "VALUES";
 
             // 상품 정보를 넣을 insert문
