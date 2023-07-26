@@ -1,16 +1,14 @@
 package com.ugahaeju.server.dto;
 
-import java.time.LocalDate;
-
 public class PostProductsReq {
-    public Long product_id;
-    public String store_id;
+    public long product_id;
+    public String productURl;
     public String product_name;
-    public float star;
-    public int review;
-    public int heart;
-    public LocalDate date;
     public int price;
-    public boolean discount;
-    public int point;
+    public int delivery_price;
+    public int product_amount;
+    public int review;
+    public float review_score;
+    public float heart;
+    public String registerdate;
 }

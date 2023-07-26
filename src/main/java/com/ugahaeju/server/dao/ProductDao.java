@@ -27,30 +27,30 @@ public class ProductDao {
     public boolean insertProducts(List<PostProductsReq> postProductsReq) throws IOException, InterruptedException {
         try {
             BigQuery bigQuery = getBigQuery();
-            TableId tableId = TableId.of("STOREDB", "Store");
 
             // 테이블의 전체 데이터 삭제
             String query = "TRUNCATE TABLE STOREDB.Product;\n";
 
             // (업데이트된) 데이터 삽입
-            query += "INSERT STOREDB.Product (product_id, store_id, product_name, star, review, heart, date, price, discount, point)\n"
+            query += "INSERT STOREDB.Product (product_id, product_uri, product_name, price, delivery_price, product_amount, review, review_score, heart, register_date)\n"
                     + "VALUES";
 
             // 상품 정보를 넣을 insert문
             for (PostProductsReq postProductReq : postProductsReq) {
                 query +=
                         String.format(
-                                "(%d, '%s', '%s', %f, %d, %d, '%s', %d, %s, %d),",
+                                "(%d, '%s', '%s', %d, %d, %d, %d, %f, %f, '%s'),",
                                 postProductReq.product_id,
-                                postProductReq.store_id,
+                                postProductReq.productURl,
                                 postProductReq.product_name,
-                                postProductReq.star,
-                                postProductReq.review,
-                                postProductReq.heart,
-                                postProductReq.date,
                                 postProductReq.price,
-                                postProductReq.discount,
-                                postProductReq.point);
+                                postProductReq.delivery_price,
+                                postProductReq.product_amount,
+                                postProductReq.review,
+                                postProductReq.review_score,
+                                postProductReq.heart,
+                                postProductReq.registerdate
+                        );
             }
 
             query = query.substring(0, query.length()-1);
