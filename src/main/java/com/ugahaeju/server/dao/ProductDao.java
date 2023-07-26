@@ -32,7 +32,7 @@ public class ProductDao {
             String query = "TRUNCATE TABLE STOREDB.Product;\n";
 
             // (업데이트된) 데이터 삽입
-            query += "INSERT STOREDB.Product (product_id, product_uri, product_name, price, delivery_price, product_amount, review, review_score, heart, register_date)\n"
+            query += "INSERT STOREDB.Product (product_id, product_url, product_name, price, delivery_price, product_amount, review, review_score, heart, register_date)\n"
                     + "VALUES";
 
             // 상품 정보를 넣을 insert문
