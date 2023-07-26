@@ -1,13 +1,16 @@
 package com.ugahaeju.server.controller;
 
+import com.ugahaeju.server.dto.GetProductsRes;
 import com.ugahaeju.server.dto.PostProductsReq;
 import com.ugahaeju.server.dto.PostProductsRes;
 import com.ugahaeju.server.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -15,7 +18,11 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-    @RequestMapping(value = "/products")
+    /**
+     * [POST] /products
+     * 크롤링한 Product 정보 저장 API
+     **/
+    @PostMapping(value = "/products")
     public PostProductsRes postProducts(@RequestBody List<PostProductsReq> postProductsReq){
         try{
             /*
@@ -58,6 +65,21 @@ public class ProductController {
             }
         } catch (Exception e){
             return new PostProductsRes(400, "상품 정보 저장에 실패하였습니다.");
+        }
+    }
+
+    /**
+     * [GET] /products
+     * 전체 Product 정보 조회 API
+     **/
+    @GetMapping(value = "/products")
+    public ArrayList<GetProductsRes> postProducts(){
+       ArrayList<GetProductsRes> products = new ArrayList<>();
+        try{
+            products = productService.getProducts();
+            return products;
+        } catch (Exception e){
+            return products;
         }
     }
 }
