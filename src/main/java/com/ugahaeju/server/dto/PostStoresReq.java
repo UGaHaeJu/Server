@@ -4,17 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostStoresReq {
     public String store_id;
-    public String grade;
-    public String category;
+    public String storeURL;
+    public String store_name;
+    public String category1;
     public String category2;
-    public int sales_amount;
-    public int sales_price;
-    public boolean good_service;
+    public String category3;
+    //public String grade;
+    //public int sales_amount;
+    //public int sales_price;
+    //public boolean good_service;
 }
