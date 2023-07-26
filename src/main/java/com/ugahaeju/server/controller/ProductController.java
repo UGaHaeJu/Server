@@ -18,6 +18,7 @@ public class ProductController {
     @RequestMapping(value = "/products")
     public PostProductsRes postProducts(@RequestBody List<PostProductsReq> postProductsReq){
         try{
+            /*
             for(PostProductsReq postProductReq : postProductsReq) {
                 if (postProductReq.product_id == null || postProductReq.product_id < 0) {
                     return new PostProductsRes(401, "상품 식별자의 형식이 올바르지 않습니다.");
@@ -47,15 +48,17 @@ public class ProductController {
                     return new PostProductsRes(401, "포인트 접릭액이 입력되지 않았거나 형식이 올바르지 않습니다.");
                 }
             }
+             */
 
             boolean isSuccess = productService.postProducts(postProductsReq);
             if(isSuccess) {
                 return new PostProductsRes(200, "상품 정보 저장에 성공하였습니다.");
             } else {
-                return new PostProductsRes(200, "상품 정보 저장에 실패하였습니다.");
+                return new PostProductsRes(400, "상품 정보 저장에 실패하였습니다.");
             }
         } catch (Exception e){
-            return new PostProductsRes(200, "상품 정보 저장에 실패하였습니다.");
+            return new PostProductsRes(400, "상품 정보 저장에 실패하였습니다.");
         }
     }
 }
+
