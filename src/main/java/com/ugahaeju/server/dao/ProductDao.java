@@ -34,14 +34,14 @@ public class ProductDao {
             String query = "TRUNCATE TABLE STOREDB.Product;\n";
 
             // (업데이트된) 데이터 삽입
-            query += "INSERT STOREDB.Product (product_id, product_url, product_name, price, delivery_price, product_amount, review, review_score, heart, register_date)\n"
+            query += "INSERT STOREDB.Product (product_id, product_url, product_name, price, delivery_price, product_amount, review, review_score, heart, register_date, store_id)\n"
                     + "VALUES";
 
             // 상품 정보를 넣을 insert문
             for (PostProductsReq postProductReq : postProductsReq) {
                 query +=
                         String.format(
-                                "(%d, '%s', '%s', %d, %d, %d, %d, %f, %f, '%s'),",
+                                "(%d, '%s', '%s', %d, %d, %d, %d, %f, %f, '%s', '%s'),",
                                 postProductReq.product_id,
                                 postProductReq.productURl,
                                 postProductReq.product_name,
@@ -51,7 +51,8 @@ public class ProductDao {
                                 postProductReq.review,
                                 postProductReq.review_score,
                                 postProductReq.heart,
-                                postProductReq.registerdate
+                                postProductReq.registerdate,
+                                postProductReq.store_id
                         );
             }
 

@@ -11,4 +11,5 @@ public class PostProductsReq {
     public float review_score;
     public float heart;
     public String registerdate;
+    public String store_id;
 }

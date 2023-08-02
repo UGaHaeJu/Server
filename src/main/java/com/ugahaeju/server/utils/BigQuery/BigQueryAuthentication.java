@@ -20,7 +20,7 @@ public class BigQueryAuthentication {
     public static BigQuery getBigQuery(){
         try {
             // credentials.json 읽기
-            File credentialsFile = ResourceUtils.getFile("src/main/resources/centered-cable-393512-dc34fd69ce92.json");
+            File credentialsFile = ResourceUtils.getFile("hf016-394001-369b3ad6aa46.json");
             GoogleCredentials credentials;
             try (FileInputStream fileInputStream = new FileInputStream(credentialsFile)) {
                 credentials = ServiceAccountCredentials.fromStream(fileInputStream);
@@ -29,7 +29,7 @@ public class BigQueryAuthentication {
             //BigQuery 생성
             BigQuery bigQuery = BigQueryOptions.newBuilder()
                     .setCredentials(credentials)
-                    .setProjectId("centered-cable-393512")
+                    .setProjectId("hf016-394001")
                     .build()
                     .getService();
             return bigQuery;
