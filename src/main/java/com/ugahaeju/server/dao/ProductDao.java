@@ -1,11 +1,13 @@
 package com.ugahaeju.server.dao;
 
 import com.google.cloud.bigquery.*;
+import com.ugahaeju.server.dto.GetProductsRes;
 import com.ugahaeju.server.dto.PostProductsReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.ugahaeju.server.utils.BigQuery.BigQueryAuthentication.getBigQuery;
@@ -23,34 +25,35 @@ public class ProductDao {
         System.out.println("Dataset: " + dataset.getDatasetId().getDataset());
     }
 
-    /** Product 테이블에 데이터 삽입 **/
+    /** Product 테이블에 데이터 INSERT **/
     public boolean insertProducts(List<PostProductsReq> postProductsReq) throws IOException, InterruptedException {
         try {
             BigQuery bigQuery = getBigQuery();
-            TableId tableId = TableId.of("STOREDB", "Store");
 
             // 테이블의 전체 데이터 삭제
             String query = "TRUNCATE TABLE STOREDB.Product;\n";
 
             // (업데이트된) 데이터 삽입
-            query += "INSERT STOREDB.Product (product_id, store_id, product_name, star, review, heart, date, price, discount, point)\n"
+            query += "INSERT STOREDB.Product (product_id, product_url, product_name, price, delivery_price, product_amount, review, review_score, heart, register_date, store_id)\n"
                     + "VALUES";
 
             // 상품 정보를 넣을 insert문
             for (PostProductsReq postProductReq : postProductsReq) {
                 query +=
                         String.format(
-                                "(%d, '%s', '%s', %f, %d, %d, '%s', %d, %s, %d),",
+                                "(%d, '%s', '%s', %d, %d, %d, %d, %f, %f, '%s', '%s'),",
                                 postProductReq.product_id,
-                                postProductReq.store_id,
+                                postProductReq.productURl,
                                 postProductReq.product_name,
-                                postProductReq.star,
-                                postProductReq.review,
-                                postProductReq.heart,
-                                postProductReq.date,
                                 postProductReq.price,
-                                postProductReq.discount,
-                                postProductReq.point);
+                                postProductReq.delivery_price,
+                                postProductReq.product_amount,
+                                postProductReq.review,
+                                postProductReq.review_score,
+                                postProductReq.heart,
+                                postProductReq.registerdate,
+                                postProductReq.store_id
+                        );
             }
 
             query = query.substring(0, query.length()-1);
@@ -62,32 +65,47 @@ public class ProductDao {
             // 결과
             result.iterateAll().forEach(rows -> rows.forEach(row -> System.out.println(row.getValue())));
 
-            /*
-                // 다른 방법
-                JobId jobId = JobId.of(UUID.randomUUID().toString());
-                Job job = bigQuery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build());
-                job = job.waitFor();
-
-                if (job == null) {
-                    throw new RuntimeException("쿼리가 존재하지 않습니다.");
-                } else {
-                    if (job.getStatus().getError() != null) {
-                        String errorMessage =
-                                job.getStatus().getError().getMessage() + "\n"
-                                        + job.getStatus().getError().getReason() + "\n"
-                                        + job.getStatus().getError().toString();
-                        throw new RuntimeException(errorMessage);
-                    } else {
-                        TableResult tableResult = job.getQueryResults();
-                        System.out.println(tableResult);
-                    }
-                }
-             */
             System.out.println("Table is updated successfully using DML");
             return true;
         } catch (Exception e){
             System.out.println("Table cannot be updated successfully using DML");
             return false;
+        }
+    }
+
+    /** Product 테이블에서 데이터 SELECT **/
+    public ArrayList<GetProductsRes> selectProducts() throws IOException, InterruptedException {
+        ArrayList<GetProductsRes> products = new ArrayList<>();
+        try {
+            BigQuery bigQuery = getBigQuery();
+
+            // 테이블의 전체 데이터 삭제
+            String query = "SELECT * FROM STOREDB.Product";
+            QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
+            TableResult result = bigQuery.query(queryConfig);
+
+            // 개별 항목
+            for (FieldValueList fieldValues : result.iterateAll()) {
+                GetProductsRes res = new GetProductsRes(
+                        fieldValues.get("product_id").getLongValue(),
+                        fieldValues.get("product_url").getStringValue(),
+                        fieldValues.get("product_name").getStringValue(),
+                        fieldValues.get("price").getNumericValue().intValue(),
+                        fieldValues.get("delivery_price").getNumericValue().intValue(),
+                        fieldValues.get("product_amount").getNumericValue().intValue(),
+                        fieldValues.get("review").getNumericValue().intValue(),
+                        fieldValues.get("review_score").getNumericValue().floatValue(),
+                        fieldValues.get("heart").getNumericValue().floatValue(),
+                        fieldValues.get("register_date").getStringValue()
+                );
+
+                products.add(res);
+            }
+            System.out.println("SELECT query is done successfully");
+            return products;
+        } catch (Exception e){
+            System.out.println("SELECT query cannot be done successfully");
+            return products;
         }
     }
 }
