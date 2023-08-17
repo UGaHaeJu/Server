@@ -1,13 +1,16 @@
 package com.ugahaeju.server.controller;
 
-import com.ugahaeju.server.model.PostProductsReq;
-import com.ugahaeju.server.model.PostProductsRes;
+import com.ugahaeju.server.dto.GetProductsRes;
+import com.ugahaeju.server.dto.PostProductsReq;
+import com.ugahaeju.server.dto.PostProductsRes;
 import com.ugahaeju.server.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -15,9 +18,14 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-    @RequestMapping(value = "/products")
+    /**
+     * [POST] /products
+     * 크롤링한 Product 정보 저장 API
+     **/
+    @PostMapping(value = "/products")
     public PostProductsRes postProducts(@RequestBody List<PostProductsReq> postProductsReq){
         try{
+            /*
             for(PostProductsReq postProductReq : postProductsReq) {
                 if (postProductReq.product_id == null || postProductReq.product_id < 0) {
                     return new PostProductsRes(401, "상품 식별자의 형식이 올바르지 않습니다.");
@@ -47,15 +55,32 @@ public class ProductController {
                     return new PostProductsRes(401, "포인트 접릭액이 입력되지 않았거나 형식이 올바르지 않습니다.");
                 }
             }
+             */
 
             boolean isSuccess = productService.postProducts(postProductsReq);
             if(isSuccess) {
                 return new PostProductsRes(200, "상품 정보 저장에 성공하였습니다.");
             } else {
-                return new PostProductsRes(200, "상품 정보 저장에 실패하였습니다.");
+                return new PostProductsRes(400, "상품 정보 저장에 실패하였습니다.");
             }
         } catch (Exception e){
-            return new PostProductsRes(200, "상품 정보 저장에 실패하였습니다.");
+            return new PostProductsRes(400, "상품 정보 저장에 실패하였습니다.");
+        }
+    }
+
+    /**
+     * [GET] /products
+     * 전체 Product 정보 조회 API
+     **/
+    @GetMapping(value = "/products")
+    public ArrayList<GetProductsRes> postProducts(){
+       ArrayList<GetProductsRes> products = new ArrayList<>();
+        try{
+            products = productService.getProducts();
+            return products;
+        } catch (Exception e){
+            return products;
         }
     }
 }
+

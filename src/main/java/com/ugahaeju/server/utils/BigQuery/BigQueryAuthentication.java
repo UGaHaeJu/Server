@@ -4,6 +4,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
+import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
@@ -12,6 +13,7 @@ import java.io.FileInputStream;
 /*
     구글 빅쿼리
  */
+@Component
 public class BigQueryAuthentication {
     /*
         구글 credentials.json을 이용한 BigQuery 생성
@@ -34,6 +36,7 @@ public class BigQueryAuthentication {
                     .getService();
             return bigQuery;
         } catch (Exception e){
+            System.out.println(e);
             return null;
         }
     }
