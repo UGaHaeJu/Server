@@ -12,4 +12,5 @@ public class PostProductsReq {
     public float heart;
     public String registerdate;
     public String store_id;
+    public String storeURL;
 }

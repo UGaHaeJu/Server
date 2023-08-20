@@ -34,7 +34,8 @@ public class ProductDao {
             String query = "TRUNCATE TABLE STOREDB.Product;\n";
 
             // (업데이트된) 데이터 삽입
-            query += "INSERT STOREDB.Product (product_id, product_url, product_name, price, delivery_price, product_amount, review, review_score, heart, register_date, store_id)\n"
+            query += "INSERT STOREDB.Product (product_id, product_url, product_name, price, delivery_price, product_amount, " +
+                    "review, review_score, heart, register_date, store_id, store_url)\n"
                     + "VALUES";
 
             // 상품 정보를 넣을 insert문
@@ -52,7 +53,8 @@ public class ProductDao {
                                 postProductReq.review_score,
                                 postProductReq.heart,
                                 postProductReq.registerdate,
-                                postProductReq.store_id
+                                postProductReq.store_id,
+                                postProductReq.storeURL
                         );
             }
 
@@ -81,6 +83,11 @@ public class ProductDao {
 
             // 테이블의 전체 데이터 삭제
             String query = "SELECT * FROM STOREDB.Product";
+            // ORDER BY review DESC NULLS LAST;
+            // ORDER BY review_score DESC NULLS LAST;
+            // "WHERE store_url=" + param
+            // "WHERE store_id=" + param
+            
             QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
             TableResult result = bigQuery.query(queryConfig);
 
@@ -96,7 +103,9 @@ public class ProductDao {
                         fieldValues.get("review").getNumericValue().intValue(),
                         fieldValues.get("review_score").getNumericValue().floatValue(),
                         fieldValues.get("heart").getNumericValue().floatValue(),
-                        fieldValues.get("register_date").getStringValue()
+                        fieldValues.get("register_date").getStringValue(),
+                        fieldValues.get("store_id").getStringValue(),
+                        fieldValues.get("store_url").getStringValue()
                 );
 
                 products.add(res);
