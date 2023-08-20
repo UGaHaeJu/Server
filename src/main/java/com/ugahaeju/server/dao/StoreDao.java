@@ -1,8 +1,10 @@
 package com.ugahaeju.server.dao;
 
 import com.google.cloud.bigquery.BigQuery;
+import com.google.cloud.bigquery.FieldValueList;
 import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.TableResult;
+import com.ugahaeju.server.dto.MyStore;
 import com.ugahaeju.server.dto.PostStoresReq;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +17,7 @@ import static com.ugahaeju.server.utils.BigQuery.BigQueryAuthentication.getBigQu
 @Component
 @RequestMapping
 public class StoreDao {
-    /** Store 테이블에 데이터 삽입 **/
+    /** Store 테이블에 데이터 저장 **/
     public boolean insertStores(List<PostStoresReq> postStoresReq) throws IOException, InterruptedException {
         try {
             BigQuery bigQuery = getBigQuery();
@@ -63,4 +65,87 @@ public class StoreDao {
             return false;
         }
     }
+
+    /** Store 테이블에서 store_name으로 store_id 검색 **/
+    public String selectStoreId(String store_name) throws IOException, InterruptedException {
+        try {
+            BigQuery bigQuery = getBigQuery();
+
+            // 스토어 이름으로 스토어 아이디 검색 쿼리
+            String query = "SELECT store_id FROM STOREDB.Store WHERE store_name = " + store_name + ";";
+
+            QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
+            TableResult result = bigQuery.query(queryConfig);
+
+            String store_id = "";
+            for (FieldValueList fieldValues : result.iterateAll()) {
+                store_id = fieldValues.get("store_id").getStringValue();
+            }
+
+            // 결과
+            System.out.println("SELECT query is done successfully");
+            return store_id;
+        } catch (Exception e){
+            System.out.println("SELECT query cannot be done successfully");
+            return null;
+        }
+    }
+
+    /** Store 테이블에서 스토어 이름으로 스토어 정보 검색 **/
+    public MyStore selectStoreByName(String store_name) throws IOException, InterruptedException {
+        MyStore myStore = new MyStore();
+
+        try {
+            BigQuery bigQuery = getBigQuery();
+
+            // 스토어 이름으로 스토어 아이디 검색 쿼리
+            String query = "SELECT store_name, rank, category1 FROM STOREDB.Store WHERE store_name = " + store_name + ";";
+
+            QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
+            TableResult result = bigQuery.query(queryConfig);
+
+            for (FieldValueList fieldValues : result.iterateAll()) {
+                myStore.store_name = fieldValues.get("store_name").getStringValue();
+                myStore.rank = fieldValues.get("rank").getNumericValue().intValue();
+                myStore.category1 = fieldValues.get("category1").getStringValue();
+            }
+
+            // 결과
+            System.out.println("SELECT query is done successfully");
+            return myStore;
+        } catch (Exception e){
+            System.out.println("SELECT query cannot be done successfully");
+            return myStore;
+        }
+    }
+
+    /** Store 테이블에서 스토어 URL로 스토어 정보 검색 **/
+    public MyStore selectStoreByUrl(String store_url) throws IOException, InterruptedException {
+        MyStore myStore = new MyStore();
+
+        try {
+            BigQuery bigQuery = getBigQuery();
+
+            // 스토어 이름으로 스토어 아이디 검색 쿼리
+            String query = "SELECT store_name, rank, category1 FROM STOREDB.Store WHERE store_url = " + store_url + ";";
+
+            QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
+            TableResult result = bigQuery.query(queryConfig);
+
+            for (FieldValueList fieldValues : result.iterateAll()) {
+                myStore.store_name = fieldValues.get("store_name").getStringValue();
+                myStore.rank = fieldValues.get("rank").getNumericValue().intValue();
+                myStore.category1 = fieldValues.get("category1").getStringValue();
+            }
+
+            // 결과
+            System.out.println("SELECT query is done successfully");
+            return myStore;
+        } catch (Exception e){
+            System.out.println("SELECT query cannot be done successfully");
+            return myStore;
+        }
+    }
 }
+
+
