@@ -66,8 +66,33 @@ public class StoreDao {
         }
     }
 
+    /** Store 테이블에서 store_url로 store_id 검색 **/
+    public String selectStoreIdByURL(String store_url) throws IOException, InterruptedException {
+        try {
+            BigQuery bigQuery = getBigQuery();
+
+            // 스토어 이름으로 스토어 아이디 검색 쿼리
+            String query = "SELECT store_id FROM STOREDB.Store WHERE store_url = " + store_url + ";";
+
+            QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
+            TableResult result = bigQuery.query(queryConfig);
+
+            String store_id = "";
+            for (FieldValueList fieldValues : result.iterateAll()) {
+                store_id = fieldValues.get("store_id").getStringValue();
+            }
+
+            // 결과
+            System.out.println("SELECT query is done successfully");
+            return store_id;
+        } catch (Exception e){
+            System.out.println("SELECT query cannot be done successfully");
+            return null;
+        }
+    }
+
     /** Store 테이블에서 store_name으로 store_id 검색 **/
-    public String selectStoreId(String store_name) throws IOException, InterruptedException {
+    public String selectStoreIdByName(String store_name) throws IOException, InterruptedException {
         try {
             BigQuery bigQuery = getBigQuery();
 
