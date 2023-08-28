@@ -73,14 +73,50 @@ public class ProductController {
      * 전체 Product 정보 조회 API
      **/
     @GetMapping(value = "/products")
-    public ArrayList<GetProductsRes> postProducts(){
+    public ArrayList<GetProductsRes> getProducts(){
        ArrayList<GetProductsRes> products = new ArrayList<>();
         try{
             products = productService.getProducts();
+
+            return products;
+        } catch (Exception e){
+            return products;
+        }
+    }
+
+    /**
+     * [GET] /products/review
+     * 리뷰 많은 순으로 Product 정보 조회 API
+     **/
+    @GetMapping(value = "/products/review")
+    public ArrayList<GetProductsRes> getProductsByReview(){
+        ArrayList<GetProductsRes> products = new ArrayList<>();
+        try{
+            //store로 나의 스토어 입력 (제외)
+            products = productService.getProductsByReview("http://uhokf.co.kr");
+
+            return products;
+        } catch (Exception e){
+            return products;
+        }
+    }
+
+    /**
+     * [GET] /products/score
+     * 리뷰 점수 높은 순으로 Product 정보 조회 API
+     **/
+    @GetMapping(value = "/products/score")
+    public ArrayList<GetProductsRes> getProductsByScore(){
+        ArrayList<GetProductsRes> products = new ArrayList<>();
+        try{
+            //store로 나의 스토어 입력 (제외)
+            products = productService.getProductsByReviewScore("http://uhokf.co.kr");
+
             return products;
         } catch (Exception e){
             return products;
         }
     }
 }
+
 

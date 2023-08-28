@@ -42,7 +42,7 @@ public class ProductDao {
             for (PostProductsReq postProductReq : postProductsReq) {
                 query +=
                         String.format(
-                                "(%d, '%s', '%s', %d, %d, %d, %d, %f, %f, '%s', '%s'),",
+                                "(%d, '%s', '%s', %d, %d, %d, %d, %f, %f, '%s', '%s', '%s'),",
                                 postProductReq.product_id,
                                 postProductReq.productURl,
                                 postProductReq.product_name,
@@ -70,6 +70,7 @@ public class ProductDao {
             System.out.println("Table is updated successfully using DML");
             return true;
         } catch (Exception e){
+            e.printStackTrace();
             System.out.println("Table cannot be updated successfully using DML");
             return false;
         }
@@ -83,8 +84,6 @@ public class ProductDao {
 
             // 테이블의 전체 데이터 조회
             String query = "SELECT * FROM STOREDB.Product";
-            // ORDER BY review DESC NULLS LAST;
-            // ORDER BY review_score DESC NULLS LAST;
 
             QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
             TableResult result = bigQuery.query(queryConfig);
@@ -105,7 +104,6 @@ public class ProductDao {
                         fieldValues.get("store_id").getStringValue(),
                         fieldValues.get("store_url").getStringValue()
                 );
-
                 products.add(res);
             }
             System.out.println("SELECT query is done successfully");
@@ -123,8 +121,8 @@ public class ProductDao {
             BigQuery bigQuery = getBigQuery();
 
             // 테이블의 전체 데이터 리뷰 많은 순으로 조회
-            String query = "SELECT * FROM STOREDB.Product ORDER BY review DESC WHERE store_id NOT IN("
-                    + store_id + ");";
+            String query = "SELECT * FROM STOREDB.Product ORDER BY review DESC;";
+            //+ " WHERE store_id NOT IN(" + store_id + ") ORDER BY review DESC;";
 
             QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
             TableResult result = bigQuery.query(queryConfig);
@@ -145,7 +143,6 @@ public class ProductDao {
                         fieldValues.get("store_id").getStringValue(),
                         fieldValues.get("store_url").getStringValue()
                 );
-
                 products.add(res);
             }
             System.out.println("SELECT query is done successfully");
@@ -163,8 +160,8 @@ public class ProductDao {
             BigQuery bigQuery = getBigQuery();
 
             // 테이블의 전체 데이터 리뷰 평점 높은 순으로 조회
-            String query = "SELECT * FROM STOREDB.Product ORDER BY review_score DESC WHERE store_id NOT IN("
-                    + store_id + ");";
+            String query = "SELECT * FROM STOREDB.Product ORDER BY review_score DESC;";
+                    // + "WHERE store_id NOT IN(" + store_id + ") ORDER BY review_score DESC;";
 
             QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
             TableResult result = bigQuery.query(queryConfig);
@@ -185,7 +182,6 @@ public class ProductDao {
                         fieldValues.get("store_id").getStringValue(),
                         fieldValues.get("store_url").getStringValue()
                 );
-
                 products.add(res);
             }
             System.out.println("SELECT query is done successfully");
