@@ -17,4 +17,6 @@ public class GetProductsRes {
     public float review_score;
     public float heart;
     public String register_date;
+    public String store_id;
+    public String store_url;
 }

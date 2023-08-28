@@ -1,6 +1,7 @@
 package com.ugahaeju.server.service;
 
 import com.ugahaeju.server.dao.ProductDao;
+import com.ugahaeju.server.dao.StoreDao;
 import com.ugahaeju.server.dto.GetProductsRes;
 import com.ugahaeju.server.dto.PostProductsReq;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductDao productDao;
+    private final StoreDao storeDao;
 
     /** Product INSERT API **/
     public boolean postProducts(List<PostProductsReq> postProductsReq) throws IOException, InterruptedException {
@@ -28,6 +30,34 @@ public class ProductService {
     /** Product SELECT API **/
     public ArrayList<GetProductsRes> getProducts() throws IOException, InterruptedException {
         ArrayList<GetProductsRes> products = productDao.selectProducts();
+        return products;
+    }
+
+    /** Product SELECT API ordered by review **/
+    public ArrayList<GetProductsRes> getProductsByReview(String store) throws IOException, InterruptedException {
+        String store_id = "";
+        if(store.substring(0, 5).equals("http")){
+            store_id = storeDao.selectStoreIdByURL(store);
+        } else {
+            store_id = storeDao.selectStoreIdByName(store);
+        }
+
+        // 리뷰 많은 순으로 정보 조회
+        ArrayList<GetProductsRes> products = productDao.selectProductsByReview(store_id);
+        return products;
+    }
+
+    /** Product SELECT API ordered by review score **/
+    public ArrayList<GetProductsRes> getProductsByReviewScore(String store) throws IOException, InterruptedException {
+        String store_id = "";
+        if(store.substring(0, 5).equals("http")){
+            store_id = storeDao.selectStoreIdByURL(store);
+        } else {
+            store_id = storeDao.selectStoreIdByName(store);
+        }
+
+        // 리뷰 평점 높은 순으로 정보 조회
+        ArrayList<GetProductsRes> products = productDao.selectProductsByReviewScore(store_id);
         return products;
     }
 }

@@ -1,6 +1,8 @@
 package com.ugahaeju.server.service;
 
+import com.ugahaeju.server.dao.ProductDao;
 import com.ugahaeju.server.dao.StoreDao;
+import com.ugahaeju.server.dto.MyStore;
 import com.ugahaeju.server.dto.PostStoresReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StoreService {
     private final StoreDao storeDao;
+    private final ProductDao productDao;
 
     public boolean insertStores(List<PostStoresReq> postStoresReqs) throws IOException, InterruptedException {
         boolean isSuccess = storeDao.insertStores(postStoresReqs);
@@ -20,5 +23,21 @@ public class StoreService {
         } else {
             return false;
         }
+    }
+
+    /** <내 스토어 분석> 기능을 위한 스토어 기본 정보 검색 **/
+    public MyStore selectStore(String store) throws IOException, InterruptedException {
+        // 내 스토어 기본 정보
+        MyStore myStore = new MyStore();
+
+        if(store.substring(0, 5).equals("http")){
+            //store_id = storeDao.selectStoreIdByURL(store);
+            myStore = storeDao.selectStoreByUrl(store);
+        } else {
+            //store_id = storeDao.selectStoreIdByName(store);
+            myStore = storeDao.selectStoreByName(store);
+        }
+
+        return myStore;
     }
 }

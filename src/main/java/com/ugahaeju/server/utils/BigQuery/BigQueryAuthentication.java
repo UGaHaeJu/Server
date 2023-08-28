@@ -22,7 +22,8 @@ public class BigQueryAuthentication {
     public static BigQuery getBigQuery(){
         try {
             // credentials.json 읽기
-            File credentialsFile = ResourceUtils.getFile("/key");
+            //File credentialsFile = ResourceUtils.getFile("/key"); //gcp
+            File credentialsFile = ResourceUtils.getFile("src/main/resources/hf016-394001-2f7043693e67.json"); //local
             GoogleCredentials credentials;
             try (FileInputStream fileInputStream = new FileInputStream(credentialsFile)) {
                 credentials = ServiceAccountCredentials.fromStream(fileInputStream);

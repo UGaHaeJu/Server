@@ -1,13 +1,14 @@
 package com.ugahaeju.server.controller;
 
-import com.ugahaeju.server.dto.PostStoresReq;
-import com.ugahaeju.server.dto.PostStoresRes;
+import com.ugahaeju.server.dto.*;
 import com.ugahaeju.server.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -15,7 +16,7 @@ import java.util.List;
 public class StoreController {
     private final StoreService storeService;
 
-    /** store table 정보 삽입 **/
+    /** store table 정보 저장 **/
     @RequestMapping(value = "/stores")
     public PostStoresRes insertStores(@RequestBody List<PostStoresReq> postStoresReq){
         try{
@@ -50,6 +51,26 @@ public class StoreController {
             }
         } catch (Exception e){
             return new PostStoresRes(400, "상점 정보 저장에 실패하였습니다.");
+        }
+    }
+
+    /** <내 스토어 분석> 기능을 위한 정보 요청 **/
+    @RequestMapping(value = "/analyze")
+    public GetMyStoreRes analyzeMyStore(@RequestParam(value = "store") String store){
+        MyStore myStore = new MyStore();
+        ArrayList<String> keywords = new ArrayList<>();
+        ArrayList<Competitors> competitors = new ArrayList<>();
+
+        try{
+            if(store == null){
+                return new GetMyStoreRes(401, "스토어 이름 혹은 스토어 URL을 입력하지 않았습니다.", myStore, keywords, competitors);
+            }
+            // 내 스토어 기본 정보
+            myStore = storeService.selectStore(store);
+
+            return new GetMyStoreRes(200, "내 스토어 분석 정보 반환에 성공하였습니다.", myStore, keywords, competitors);
+        } catch (Exception e){
+            return new GetMyStoreRes(400, "내 스토어 분석 정보 반환에 실패하였습니다.", myStore, keywords, competitors);
         }
     }
 }
