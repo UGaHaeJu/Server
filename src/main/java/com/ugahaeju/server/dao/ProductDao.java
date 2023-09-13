@@ -1,6 +1,7 @@
 package com.ugahaeju.server.dao;
 
 import com.google.cloud.bigquery.*;
+import com.ugahaeju.server.dto.AllStoreProd;
 import com.ugahaeju.server.dto.GetProductsRes;
 import com.ugahaeju.server.dto.PostProductsReq;
 import lombok.RequiredArgsConstructor;
@@ -73,6 +74,123 @@ public class ProductDao {
             e.printStackTrace();
             System.out.println("Table cannot be updated successfully using DML");
             return false;
+        }
+    }
+
+    /** 내 스토어의 Products 데이터 SELECT **/
+    public ArrayList<GetProductsRes> selectMyProducts(String url) throws IOException, InterruptedException {
+        ArrayList<GetProductsRes> products = new ArrayList<>();
+        try {
+            BigQuery bigQuery = getBigQuery();
+
+            String query = "SELECT * FROM STOREDB.Product WHERE store_url = '"  + url +"'";
+
+            QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
+            TableResult result = bigQuery.query(queryConfig);
+
+            // 개별 항목
+            for (FieldValueList fieldValues : result.iterateAll()) {
+                GetProductsRes res = new GetProductsRes(
+                        fieldValues.get("product_id").getLongValue(),
+                        fieldValues.get("product_url").getStringValue(),
+                        fieldValues.get("product_name").getStringValue(),
+                        fieldValues.get("price").getNumericValue().intValue(),
+                        fieldValues.get("delivery_price").getNumericValue().intValue(),
+                        fieldValues.get("product_amount").getNumericValue().intValue(),
+                        fieldValues.get("review").getNumericValue().intValue(),
+                        fieldValues.get("review_score").getNumericValue().floatValue(),
+                        fieldValues.get("heart").getNumericValue().floatValue(),
+                        fieldValues.get("register_date").getStringValue(),
+                        fieldValues.get("store_id").getStringValue(),
+                        fieldValues.get("store_url").getStringValue()
+                );
+                products.add(res);
+            }
+            System.out.println("SELECT query is done successfully");
+            return products;
+        } catch (Exception e){
+            System.out.println("SELECT query cannot be done successfully");
+            return products;
+        }
+    }
+
+    /** 내 스토어의 Product 데이터 SELECT **/
+    public GetProductsRes selectMyProduct(long id) throws IOException, InterruptedException {
+        GetProductsRes product = new GetProductsRes();
+        try {
+            BigQuery bigQuery = getBigQuery();
+
+            String query = "SELECT * FROM STOREDB.Product WHERE product_id = " + id;
+
+            QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
+            TableResult result = bigQuery.query(queryConfig);
+
+            // 개별 항목
+            for (FieldValueList fieldValues : result.iterateAll()) {
+                GetProductsRes res = new GetProductsRes(
+                        fieldValues.get("product_id").getLongValue(),
+                        fieldValues.get("product_url").getStringValue(),
+                        fieldValues.get("product_name").getStringValue(),
+                        fieldValues.get("price").getNumericValue().intValue(),
+                        fieldValues.get("delivery_price").getNumericValue().intValue(),
+                        fieldValues.get("product_amount").getNumericValue().intValue(),
+                        fieldValues.get("review").getNumericValue().intValue(),
+                        fieldValues.get("review_score").getNumericValue().floatValue(),
+                        fieldValues.get("heart").getNumericValue().floatValue(),
+                        fieldValues.get("register_date").getStringValue(),
+                        fieldValues.get("store_id").getStringValue(),
+                        fieldValues.get("store_url").getStringValue()
+                );
+                product = res;
+            }
+            System.out.println("SELECT query is done successfully");
+            return product;
+        } catch (Exception e){
+            System.out.println("SELECT query cannot be done successfully");
+            return product;
+        }
+    }
+
+    public ArrayList<AllStoreProd> selectProductNStore() throws IOException, InterruptedException {
+        ArrayList<AllStoreProd> all = new ArrayList<>();
+        try {
+            BigQuery bigQuery = getBigQuery();
+
+            // 테이블의 전체 데이터 조회
+            String query = "SELECT * FROM STOREDB.Product AS p " +
+                    "LEFT JOIN STOREDB.Store AS s " +
+                    "ON p.store_id = s.store_id";
+
+            QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
+            TableResult result = bigQuery.query(queryConfig);
+
+            // 개별 항목
+            for (FieldValueList fieldValues : result.iterateAll()) {
+                AllStoreProd res = new AllStoreProd(
+                        fieldValues.get("product_id").getLongValue(),
+                        fieldValues.get("product_url").getStringValue(),
+                        fieldValues.get("product_name").getStringValue(),
+                        fieldValues.get("price").getNumericValue().intValue(),
+                        fieldValues.get("delivery_price").getNumericValue().intValue(),
+                        fieldValues.get("product_amount").getNumericValue().intValue(),
+                        fieldValues.get("review").getNumericValue().intValue(),
+                        fieldValues.get("review_score").getNumericValue().floatValue(),
+                        fieldValues.get("heart").getNumericValue().floatValue(),
+                        fieldValues.get("register_date").getStringValue(),
+                        fieldValues.get("store_id").getStringValue(),
+                        fieldValues.get("store_url").getStringValue(),
+                        fieldValues.get("store_name").getStringValue(),
+                        fieldValues.get("category1").getStringValue(),
+                        fieldValues.get("category2").getStringValue(),
+                        fieldValues.get("category3").getStringValue()
+                        );
+                all.add(res);
+            }
+            System.out.println("SELECT query is done successfully");
+            return all;
+        } catch (Exception e){
+            System.out.println("SELECT query cannot be done successfully");
+            return all;
         }
     }
 

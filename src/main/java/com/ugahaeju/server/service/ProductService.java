@@ -2,6 +2,7 @@ package com.ugahaeju.server.service;
 
 import com.ugahaeju.server.dao.ProductDao;
 import com.ugahaeju.server.dao.StoreDao;
+import com.ugahaeju.server.dto.AllStoreProd;
 import com.ugahaeju.server.dto.GetProductsRes;
 import com.ugahaeju.server.dto.PostProductsReq;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,25 @@ public class ProductService {
             return false;
         }
     }
+
+    /** MyProducts SELECT API **/
+    public ArrayList<GetProductsRes> getMyProducts(String url) throws IOException, InterruptedException {
+        ArrayList<GetProductsRes> myProducts = productDao.selectMyProducts(url);
+        return myProducts;
+    }
+
+    /** MyProduct SELECT API **/
+    public GetProductsRes getMyProduct(long id) throws IOException, InterruptedException {
+        GetProductsRes myProduct = productDao.selectMyProduct(id);
+        return myProduct;
+    }
+
+    /** Product 와 Store 조인 데이터 SELECT API **/
+    public ArrayList<AllStoreProd> getProductNStore() throws IOException, InterruptedException {
+        ArrayList<AllStoreProd> all = productDao.selectProductNStore();
+        return all;
+    }
+
 
     /** Product SELECT API **/
     public ArrayList<GetProductsRes> getProducts() throws IOException, InterruptedException {
