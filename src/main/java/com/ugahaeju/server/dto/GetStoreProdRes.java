@@ -11,10 +11,8 @@ import java.util.ArrayList;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetMyStoreRes {
+public class GetStoreProdRes {
     public int code;
     public String message;
-    public MyStore myStore;
-    public ArrayList<String> keywords;
-    public ArrayList<Competitors> result3;
+    public ArrayList<GetProductsRes> myProducts;
 }
