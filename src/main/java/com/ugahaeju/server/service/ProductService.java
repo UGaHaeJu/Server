@@ -3,6 +3,7 @@ package com.ugahaeju.server.service;
 import com.ugahaeju.server.dao.ProductDao;
 import com.ugahaeju.server.dao.StoreDao;
 import com.ugahaeju.server.dto.AllStoreProd;
+import com.ugahaeju.server.dto.Average;
 import com.ugahaeju.server.dto.GetProductsRes;
 import com.ugahaeju.server.dto.PostProductsReq;
 import lombok.RequiredArgsConstructor;
@@ -68,16 +69,21 @@ public class ProductService {
     }
 
     /** Product SELECT API ordered by review score **/
-    public ArrayList<GetProductsRes> getProductsByReviewScore(String store) throws IOException, InterruptedException {
-        String store_id = "";
-        if(store.substring(0, 5).equals("http")){
-            store_id = storeDao.selectStoreIdByURL(store);
-        } else {
-            store_id = storeDao.selectStoreIdByName(store);
-        }
+    public ArrayList<Average> getProductsByReviewScore(String url) throws IOException, InterruptedException {
+//        String store_id = "";
+//        if(store.substring(0, 5).equals("http")){
+//            store_id = storeDao.selectStoreIdByURL(store);
+//        } else {
+//            store_id = storeDao.selectStoreIdByName(store);
+//        }
 
+        ArrayList<Average> aver = new ArrayList<>();
         // 리뷰 평점 높은 순으로 정보 조회
-        ArrayList<GetProductsRes> products = productDao.selectProductsByReviewScore(store_id);
-        return products;
+        Average average = productDao.selectProductsByReviewScore();
+        // 내 상품 평균 수치 분석
+        Average myAverage = productDao.selectMyProductsAverage(url);
+        aver.add(average);
+        aver.add(myAverage);
+        return aver;
     }
 }
