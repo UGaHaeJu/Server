@@ -4,8 +4,7 @@ import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.FieldValueList;
 import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.TableResult;
-import com.ugahaeju.server.dto.MyStore;
-import com.ugahaeju.server.dto.PostStoresReq;
+import com.ugahaeju.server.dto.StoreDto;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -18,7 +17,7 @@ import static com.ugahaeju.server.utils.BigQuery.BigQueryAuthentication.getBigQu
 @RequestMapping
 public class StoreDao {
     /** Store 테이블에 데이터 저장 **/
-    public boolean insertStores(List<PostStoresReq> postStoresReq) throws IOException, InterruptedException {
+    public boolean insertStores(List<StoreDto> storeDto) throws IOException, InterruptedException {
         try {
             BigQuery bigQuery = getBigQuery();
 
@@ -26,17 +25,18 @@ public class StoreDao {
             String query = "TRUNCATE TABLE STOREDB.Store;\n";
 
             // (업데이트된) 데이터 삽입
-            query += "INSERT STOREDB.Store (store_id, store_url, store_name, category1, category2, category3)\n"
+            query += "INSERT STOREDB.Store (store_id, store_url, store_name, rank, category1, category2, category3)\n"
                     + "VALUES";
 
             // 상품 정보를 넣을 insert문
-            for (PostStoresReq postStoreReq : postStoresReq) {
+            for (StoreDto postStoreReq : storeDto) {
                 query +=
                         String.format(
-                                "('%s', '%s', '%s', '%s', '%s', '%s'),",
+                                "('%s', '%s', '%s', %d, '%s', '%s', '%s'),",
                                 postStoreReq.store_id,
                                 postStoreReq.storeURL,
                                 postStoreReq.store_name,
+                                postStoreReq.rank,
                                 postStoreReq.category1,
                                 postStoreReq.category2,
                                 postStoreReq.category3
@@ -117,8 +117,8 @@ public class StoreDao {
     }
 
     /** Store 테이블에서 스토어 이름으로 스토어 정보 검색 **/
-    public MyStore selectStoreByName(String store_name) throws IOException, InterruptedException {
-        MyStore myStore = new MyStore();
+    public StoreDto selectStoreByName(String store_name) throws IOException, InterruptedException {
+        StoreDto myStore = new StoreDto();
 
         try {
             BigQuery bigQuery = getBigQuery();
@@ -131,8 +131,12 @@ public class StoreDao {
 
             for (FieldValueList fieldValues : result.iterateAll()) {
                 myStore.store_name = fieldValues.get("store_name").getStringValue();
+                myStore.store_id = fieldValues.get("store_id").getStringValue();
+                myStore.storeURL = fieldValues.get("store_url").getStringValue();
                 myStore.rank = fieldValues.get("rank").getNumericValue().intValue();
                 myStore.category1 = fieldValues.get("category1").getStringValue();
+                myStore.category2 = fieldValues.get("category2").getStringValue();
+                myStore.category3 = fieldValues.get("category3").getStringValue();
             }
 
             // 결과
@@ -145,28 +149,33 @@ public class StoreDao {
     }
 
     /** Store 테이블에서 스토어 URL로 스토어 정보 검색 **/
-    public MyStore selectStoreByUrl(String store_url) throws IOException, InterruptedException {
-        MyStore myStore = new MyStore();
+    public StoreDto selectStoreByUrl(String store_url) throws IOException, InterruptedException {
+        StoreDto myStore = new StoreDto();
 
         try {
             BigQuery bigQuery = getBigQuery();
 
             // 스토어 이름으로 스토어 아이디 검색 쿼리
-            String query = "SELECT store_name, rank, category1 FROM STOREDB.Store WHERE store_url = " + store_url + ";";
+            String query = "SELECT * FROM STOREDB.Store WHERE store_url = '" + store_url + "';";
 
             QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
             TableResult result = bigQuery.query(queryConfig);
 
             for (FieldValueList fieldValues : result.iterateAll()) {
                 myStore.store_name = fieldValues.get("store_name").getStringValue();
+                myStore.store_id = fieldValues.get("store_id").getStringValue();
+                myStore.storeURL = fieldValues.get("store_url").getStringValue();
                 myStore.rank = fieldValues.get("rank").getNumericValue().intValue();
                 myStore.category1 = fieldValues.get("category1").getStringValue();
+                myStore.category2 = fieldValues.get("category2").getStringValue();
+                myStore.category3 = fieldValues.get("category3").getStringValue();
             }
 
             // 결과
             System.out.println("SELECT query is done successfully");
             return myStore;
         } catch (Exception e){
+            e.printStackTrace();
             System.out.println("SELECT query cannot be done successfully");
             return myStore;
         }

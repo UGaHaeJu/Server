@@ -30,7 +30,7 @@ public class StoreController {
 
     /** store table 정보 저장 **/
     @RequestMapping(value = "/stores")
-    public PostStoresRes insertStores(@RequestBody List<PostStoresReq> postStoresReq){
+    public PostStoresRes insertStores(@RequestBody List<StoreDto> storeDto){
         try{
             /*
             for(PostStoresReq postStoreReq : postStoresReq) {
@@ -56,13 +56,31 @@ public class StoreController {
             }
              */
 
-            if(storeService.insertStores(postStoresReq)) {
+            if(storeService.insertStores(storeDto)) {
                 return new PostStoresRes(200, "상점 정보 저장에 성공하였습니다.");
             } else {
                 return new PostStoresRes(400, "상점 정보 저장에 실패하였습니다.");
             }
         } catch (Exception e){
             return new PostStoresRes(400, "상점 정보 저장에 실패하였습니다.");
+        }
+    }
+
+    @RequestMapping(value = "/store")
+    public GetStoreRes getMyStoreInfo(@RequestParam(value = "url") String storeUrl){
+        StoreDto myStore = new StoreDto();
+
+        try{
+            if(storeUrl == null){
+                return new GetStoreRes(400, "내 스토어 조회에 실패하였습니다.", myStore);
+            }
+
+            // 내 스토어의 상품 정보
+            myStore = storeService.selectStore(storeUrl);
+
+            return new GetStoreRes(200, "내 스토어 조회에 성공하였습니다.", myStore);
+        } catch (Exception e){
+            return new GetStoreRes(400, "내 스토어 조회에 실패하였습니다.", myStore);
         }
     }
 
