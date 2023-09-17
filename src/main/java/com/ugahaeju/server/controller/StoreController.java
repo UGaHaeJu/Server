@@ -77,6 +77,10 @@ public class StoreController {
 
             // 내 스토어의 상품 정보
             myStore = storeService.selectStore(storeUrl);
+            
+            if(myStore.getStore_id().isEmpty()){
+                return new GetStoreRes(400, "존재하지 않는 스토어 주소입니다.", myStore);
+            }
 
             return new GetStoreRes(200, "내 스토어 조회에 성공하였습니다.", myStore);
         } catch (Exception e){
@@ -96,6 +100,10 @@ public class StoreController {
 
             // 내 스토어의 상품 정보
             myProducts = productService.getMyProducts(storeUrl);
+
+            if(myProducts.isEmpty()){
+                return new GetStoreProdRes(400, "존재하지 않는 스토어 주소입니다.", myProducts);
+            }
 
             return new GetStoreProdRes(200, "내 스토어의 상품 반환에 성공하였습니다.", myProducts);
         } catch (Exception e){
