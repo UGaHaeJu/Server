@@ -86,4 +86,11 @@ public class ProductService {
         aver.add(myAverage);
         return aver;
     }
+
+    /** Product SELECT API related with recommendation **/
+    public ArrayList<GetProductsRes> getRecommendedProducts(String[] ids) throws IOException, InterruptedException {
+        ArrayList<GetProductsRes> recommendations = new ArrayList<>();
+        recommendations = productDao.selectRecommendedProducts(ids);
+        return recommendations;
+    }
 }

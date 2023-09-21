@@ -400,4 +400,57 @@ public class ProductDao {
             return average;
         }
     }
+
+    /** Product 테이블에서 추천 상품 데이터 가져오기 **/
+    public ArrayList<GetProductsRes> selectRecommendedProducts(String[] ids) throws IOException, InterruptedException {
+        ArrayList<GetProductsRes> products = new ArrayList<>();
+        try {
+            BigQuery bigQuery = getBigQuery();
+
+            // 테이블의 top 80 데이터 리뷰 평점 높은 순으로 조회
+            String query = "SELECT * FROM STOREDB.Product WHERE product_id IN";
+            query +=
+                    String.format(
+                            "(%s, %s, %s, %s, %s);",
+                            ids[2].substring(1, 12),
+                            ids[4].substring(1, 12),
+                            ids[6].substring(1, 12),
+                            ids[8].substring(1, 12),
+                            ids[10].substring(1, 12)
+//                            Integer.parseInt((ids[2].substring(1, 12))),
+//                            Integer.parseInt(ids[4].substring(1, 12)),
+//                            Integer.parseInt(ids[6].substring(1, 12)),
+//                            Integer.parseInt(ids[8].substring(1, 12)),
+//                            Integer.parseInt(ids[10].substring(1, 12))
+                    );
+
+            QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
+            TableResult result = bigQuery.query(queryConfig);
+
+            for (FieldValueList fieldValues : result.iterateAll()) {
+                GetProductsRes res = new GetProductsRes(
+                        fieldValues.get("product_id").getLongValue(),
+                        fieldValues.get("product_url").getStringValue(),
+                        fieldValues.get("product_name").getStringValue(),
+                        fieldValues.get("price").getNumericValue().intValue(),
+                        fieldValues.get("delivery_price").getNumericValue().intValue(),
+                        fieldValues.get("product_amount").getNumericValue().intValue(),
+                        fieldValues.get("review").getNumericValue().intValue(),
+                        fieldValues.get("review_score").getNumericValue().floatValue(),
+                        fieldValues.get("heart").getNumericValue().floatValue(),
+                        fieldValues.get("register_date").getStringValue(),
+                        fieldValues.get("store_id").getStringValue(),
+                        fieldValues.get("store_url").getStringValue()
+                );
+                products.add(res);
+            }
+
+            System.out.println("SELECT query is done successfully");
+            return products;
+        } catch (Exception e){
+            e.printStackTrace();
+            System.out.println("SELECT query cannot be done successfully");
+            return products;
+        }
+    }
 }
