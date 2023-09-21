@@ -7,10 +7,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostStoresReq {
+public class StoreDto {
     public String store_id;
     public String storeURL;
     public String store_name;
+    public int rank;
     public String category1;
     public String category2;
     public String category3;

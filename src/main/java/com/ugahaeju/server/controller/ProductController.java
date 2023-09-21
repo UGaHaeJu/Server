@@ -1,14 +1,9 @@
 package com.ugahaeju.server.controller;
 
-import com.ugahaeju.server.dto.GetProductsRes;
-import com.ugahaeju.server.dto.PostProductsReq;
-import com.ugahaeju.server.dto.PostProductsRes;
+import com.ugahaeju.server.dto.*;
 import com.ugahaeju.server.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,15 +101,19 @@ public class ProductController {
      * 리뷰 점수 높은 순으로 Product 정보 조회 API
      **/
     @GetMapping(value = "/products/score")
-    public ArrayList<GetProductsRes> getProductsByScore(){
-        ArrayList<GetProductsRes> products = new ArrayList<>();
+    public GetAverageRes getProductsByScore(@RequestParam(value = "url") String url){
+        ArrayList<Average> aver = new ArrayList<>();
+        Average topAverage = new Average();
+        Average myAverage = new Average();
         try{
             //store로 나의 스토어 입력 (제외)
-            products = productService.getProductsByReviewScore("http://uhokf.co.kr");
+            aver = productService.getProductsByReviewScore(url);
+            topAverage = aver.get(0);
+            myAverage = aver.get(1);
 
-            return products;
+            return new GetAverageRes(200, "리뷰 점수 Top 80 상품 비교 정보 조회에 성공하였습니다.", topAverage, myAverage);
         } catch (Exception e){
-            return products;
+            return new GetAverageRes(200, "리뷰 점수 Top 80 상품 비교 정보 조회에 실패하였습니다.",topAverage, myAverage);
         }
     }
 }
