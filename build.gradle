@@ -25,20 +25,27 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+	//implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
+	implementation 'org.projectlombok:lombok:1.18.16'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	compileOnly 'org.projectlombok:lombok:1.18.20'
+	annotationProcessor 'org.projectlombok:lombok:1.18.20'
+	testCompileOnly 'org.projectlombok:lombok:1.18.20'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 	runtimeOnly 'com.h2database:h2'
-	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 
+	implementation group: 'org.springframework', name: 'spring-test', version: '3.1.1.RELEASE'
 	// GCP
-	//implementation platform('com.google.cloud:libraries-bom:26.1.5')
-
+	implementation platform('com.google.cloud:libraries-bom:26.1.5')
 	// Integrate with BigQuery
-	//implementation 'com.google.cloud:google-cloud-bigquery'
-	//implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-starter-bigquery', version: '1.2.5.RELEASE'
+	implementation 'com.google.cloud:google-cloud-bigquery'
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-starter-bigquery', version: '1.2.5.RELEASE'
+	// Goolge Cloud
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-starter', version: '1.2.5.RELEASE'
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-storage', version: '1.2.5.RELEASE'
 }
 
 tasks.named('test') {
